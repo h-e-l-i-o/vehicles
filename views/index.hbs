@@ -1,2 +1,37 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<h1>Vehicles list</h1>
+<p>{{count}} results found - page {{page.current}} </p>
+<form method="GET">
+    <input type="text" name="filter" value="{{filter}}"/>
+    <button type="submit">Filter</button>
+</form>
+
+<ul class="vehicle_list">
+    {{#if filtered}}
+        {{#each vehicles}}
+            <li>{{this.item.make}} {{this.item.model}} {{this.item.year}} <a href="/delete/{{this.item._id.$oid}}">Delete</a></li>
+        {{/each}}
+    {{else}}
+        {{#each vehicles}}
+            <li>{{this.make}} {{this.model}} {{this.year}} <a href="/delete/{{this._id.$oid}}">Delete</a></li>
+        {{/each}}
+    {{/if}}
+</ul>
+
+<p>{{#if back}}
+        <a href="?filter={{filter}}&page={{page.previous}}">&lt;&lt; Back</a>
+    {{/if}}
+    &nbsp;&nbsp;&nbsp;
+    {{#if forward}}
+        <a href="?filter={{filter}}&page={{page.next}}">Next &gt;&gt;</a>
+    {{/if}}
+</p>
+
+<p>{{vehicleExists}} </p>
+<form method="POST">
+    <input type="text" name="make"/>
+    <input type="text" name="model"/>
+    <input type="text" name="year"/>
+    <button type="submit">Add new model</button>
+</form>
+
+
