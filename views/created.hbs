@@ -1,4 +1,9 @@
 <p>{{message}} </p>
+<ul class="message_list">
+        {{#each messages}}
+            <li>{{this}} </li>
+        {{/each}}
+</ul>
 <form method="GET" action="/">
     <button type="submit">OK</button>
 </form>

@@ -21,6 +21,7 @@ const saveVehicleData = (data) => {
   fs.writeFileSync(dataPath, stringifyData)
 }
 const getVehiclesPage = (filteredVehicles, page = 1, limit = 50) => {
+  limit = process.env.PAGESIZE || limit
   const startIndex = (page - 1) * limit
   const endIndex = page * limit
   const result = filteredVehicles.slice(startIndex, endIndex)
@@ -50,7 +51,7 @@ const fuzzySearch = (list, pattern) => {
 
 /* browse vehicles. */
 router.get('/', function (req, res, next) {
-  const limit = 50
+  const limit = process.env.PAGESIZE || 50
   const page = {}
   page.current = req.query.page ? Number(req.query.page) : 1
   page.next = page.current + 1
@@ -73,12 +74,13 @@ router.get('/', function (req, res, next) {
 
   const forward = (page.current * limit) < count
   const back = page.current > 1
-  const vehicles = getVehiclesPage(filteredVehicles, page.current)
+  const vehicles = getVehiclesPage(filteredVehicles, page.current, limit)
   res.render('index', { count, vehicles, page, filter, filtered, forward, back })
 })
 
-// delete - using post method because delete not allowed from html
+// delete - using get method because delete not allowed from html
 router.get('/delete/:oid', (req, res) => {
+  const messages = []
   const allVehicles = getVehicleData()
   const oid = req.params.oid
   const vehicleIndex = allVehicles.findIndex(vehicle => vehicle._id.$oid === oid)
@@ -86,14 +88,20 @@ router.get('/delete/:oid', (req, res) => {
   if (vehicleFound) {
     allVehicles.splice(vehicleIndex, 1)
     saveVehicleData(allVehicles)
+    messages.push('Vehicle deleted')
+  } else {
+    messages.push('Vehicle not found')
   }
-  res.render('deleted', { vehicleFound })
+  res.render('deleted', { messages })
 })
 
-// delete - using post method because delete not allowed from html
 router.post('/', (req, res) => {
-  let message = ''
-  if (isNaN(req.body.year)) return res.render('created', { message: 'Year must be a number', vehicleExists: false })
+  const messages = []
+  if (isNaN(req.body.year) || !req.body.year) messages.push('Year must be a number')
+  if (!req.body.make) messages.push('Make is required')
+  if (!req.body.model) messages.push('Model is required')
+  if (messages.length > 0) return res.render('created', { messages })
+
   const allVehicles = getVehicleData()
   const checkDuplicate = () => {
     const vehicleIndex = allVehicles.findIndex(vehicle => {
@@ -105,9 +113,10 @@ router.post('/', (req, res) => {
     })
     return vehicleIndex > -1
   }
+
   const vehicleExists = checkDuplicate()
   if (vehicleExists) {
-    message = 'Vehicle already exist'
+    messages.push('Vehicle already exist')
   } else {
     allVehicles.push({
       _id: { $oid: mongoObjectId() },
@@ -116,9 +125,9 @@ router.post('/', (req, res) => {
       year: Number(req.body.year)
     })
     saveVehicleData(allVehicles)
-    message = 'Vehicle added succesfully'
+    messages.push('Vehicle added succesfully')
   }
-  res.render('created', { vehicleExists, message })
+  res.render('created', { messages })
 })
 
 module.exports = router

@@ -26,12 +26,15 @@
     {{/if}}
 </p>
 
-<p>{{vehicleExists}} </p>
+<h2>Add new model:</h2>
 <form method="POST">
-    <input type="text" name="make"/>
-    <input type="text" name="model"/>
-    <input type="text" name="year"/>
-    <button type="submit">Add new model</button>
+    <label for="make">Make:</label><br>
+    <input type="text" name="make" placeholder="e.g. FORD" required/><br><br>
+    <label for="make">Model:</label><br>
+    <input type="text" name="model" placeholder="e.g. MUSTANG" required/><br><br>
+    <label for="make">Year:</label><br>
+    <input type="number" name="year" placeholder="e.g. 1995" required/><br><br>
+    <button type="submit">Add</button><br>
 </form>
 
 

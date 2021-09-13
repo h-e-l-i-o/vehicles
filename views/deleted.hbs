@@ -1,8 +1,8 @@
-{{#if vehicleFound}}
-<h1>Vehicle has been deleted</h1>
-{{else}}
-<h1>Vehicle does not exist</h1>
-{{/if}}
+<ul class="message_list">
+        {{#each messages}}
+            <li>{{this}} </li>
+        {{/each}}
+</ul>
 <form method="GET" action="/">
     <button type="submit">OK</button>
 </form>
