@@ -15,7 +15,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Demo
 
-Open [https://dashboard.heroku.com/apps/vhcls](https://dashboard.heroku.com/apps/vhcls) to view app deployed on Heroku.
+Open [https://vhcls.herokuapp.com/](https://vhcls.herokuapp.com/) to view app deployed on Heroku.
 
 
 ## Fuzzy Search
